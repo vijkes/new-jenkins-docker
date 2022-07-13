@@ -1,7 +1,7 @@
 pipeline {
     
     agent {
-        label "linuxbuildnode"
+        label "Jenkins-slave-linux-1"
     }
     
     
@@ -113,8 +113,8 @@ pipeline {
                sshagent(['QA_ENV_SSH_CRED']) {
     
                     
-                    sh "ssh -o StrictHostKeyChecking=no ec2-user@18.221.178.91 sudo docker rm -f mynewjavaapp"
-                    sh "ssh ec2-user@18.221.178.91 kubectl version --short --client"
+                    sh "ssh -o StrictHostKeyChecking=no ec2-user@18.221.178.91 sudo kubectl  delete    deployment mynewjavaapp"
+                //    sh "ssh ec2-user@18.221.178.91 kubectl version --short --client"
                     sh "ssh  ec2-user@18.221.178.91 sudo kubectl  create    deployment mynewjavaapp  --image=vijkes/javaweb:${BUILD_TAG}"
                     sh "ssh ec2-user@18.221.178.91 sudo wget https://raw.githubusercontent.com/vimallinuxworld13/jenkins-docker-maven-java-webapp/master/webappsvc.yml"
                     sh "ssh ec2-user@18.221.178.91 sudo kubectl  apply -f webappsvc.yml"
