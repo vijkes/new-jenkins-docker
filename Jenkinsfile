@@ -75,7 +75,7 @@ pipeline {
                 
                 //retry(10) {
                   //  sh 'curl --silent  http://18.224.215.103:8080/java-web-app/ | grep India'
-                }
+                //}
             
                
             }
