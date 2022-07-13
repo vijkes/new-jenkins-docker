@@ -67,7 +67,7 @@ pipeline {
             
         }
         
-        
+        /*
          stage('QAT Test') {
             steps {
                 
@@ -80,7 +80,7 @@ pipeline {
                
             }
         }
-          
+          */
         
          
          
