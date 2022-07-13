@@ -114,7 +114,11 @@ pipeline {
     
                     
                     sh "ssh -o StrictHostKeyChecking=no ec2-user@18.221.178.91 sudo docker rm -f mynewjavaapp"
-                    sh "ssh ec2-user@18.221.178.91 wget https://raw.githubusercontent.com/vijkes/new-jenkins-docker/master/prereqs.sh"
+                    sh "ssh ec2-user@18.221.178.91 curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.22.6/2022-03-09/bin/linux/amd64/kubectl"
+                   sh "ssh ec2-user@18.221.178.91 chmod +x ./kubectl"
+                   sh "ssh ec2-user@18.221.178.91 mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin"
+                   sh "ssh ec2-user@18.221.178.91 echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc"
+                   sh "ssh ec2-user@18.221.178.91 kubectl version --short --client"
                     sh "ssh  ec2-user@18.221.178.91 sudo kubectl  create    deployment mynewjavaapp  --image=vijkes/javaweb:${BUILD_TAG}"
                     sh "ssh ec2-user@18.221.178.91 sudo wget https://raw.githubusercontent.com/vimallinuxworld13/jenkins-docker-maven-java-webapp/master/webappsvc.yml"
                     sh "ssh ec2-user@18.221.178.91 sudo kubectl  apply -f webappsvc.yml"
