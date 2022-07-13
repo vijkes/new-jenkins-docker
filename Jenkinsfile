@@ -71,10 +71,10 @@ pipeline {
          stage('QAT Test') {
             steps {
                 
-               // sh 'curl --silent http://13.233.100.238:8080/java-web-app/ |  grep India'
+                sh 'curl --silent http://3.22.171.22:8080/java-web-app/ |  grep India'
                 
-                retry(10) {
-                    sh 'curl --silent  http://18.224.215.103:8080/java-web-app/ | grep India'
+                //retry(10) {
+                  //  sh 'curl --silent  http://18.224.215.103:8080/java-web-app/ | grep India'
                 }
             
                
