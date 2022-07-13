@@ -114,7 +114,7 @@ pipeline {
     
                     
                     sh "ssh -o StrictHostKeyChecking=no ec2-user@18.221.178.91 sudo docker rm -f mynewjavaapp"
-                    sh "prereqs.sh"
+                    sh "ssh ec2-user@18.221.178.91 wget https://raw.githubusercontent.com/vijkes/new-jenkins-docker/master/prereqs.sh"
                     sh "ssh  ec2-user@18.221.178.91 sudo kubectl  create    deployment mynewjavaapp  --image=vijkes/javaweb:${BUILD_TAG}"
                     sh "ssh ec2-user@18.221.178.91 sudo wget https://raw.githubusercontent.com/vimallinuxworld13/jenkins-docker-maven-java-webapp/master/webappsvc.yml"
                     sh "ssh ec2-user@18.221.178.91 sudo kubectl  apply -f webappsvc.yml"
