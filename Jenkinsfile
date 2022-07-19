@@ -46,22 +46,31 @@ pipeline {
             steps {
                 sshagent(['QA_ENV_SSH_CRED']) {
 
-                sh 'ssh -o StrictHostKeyChecking=no ec2-user@13.59.66.87 sudo docker rm -f mynewjavaapp'
-                sh "ssh ec2-user@13.59.66.87 sudo docker run -d -p 8080:8080 --name mynewjavaapp  vijkes/javaweb:${BUILD_TAG}"
+                sh 'sudo docker rm -f mynewjavawebapp'
+                sh "sudo docker run -d -p 8080:8080 --name mynewjavawebapp  vijkes/javaweb:${BUILD_TAG}"
                 
             }
         }
     }    
-        
+        stage('Deploy webApp in QA /Test Environment') {
+            steps {
+                sshagent(['QA_ENV_SSH_CRED']) {
+
+                sh 'ssh -o StrictHostKeyChecking=no ec2-user@3.14.69.168 sudo docker rm -f mynewjavawebapp'
+                sh "ssh ec2-user@3.14.69.168 sudo docker run -d -p 8080:8080 --name mynewjavawebapp  vijkes/javaweb:${BUILD_TAG}"
+                
+            }
+        }
+    }   /* 
         stage('QAT Test') {
             steps {
                 
-                retry(10) {
-                sh 'curl --silent  http://13.59.66.87:8080/java-web-app/ | grep India'
+                retry(20) {
+                sh 'curl --silent  http://3.14.69.168:8080/java-web-app/ | grep India'
                 }
             } 
             
-        }
+        }*/
         
         stage('approved')  {
             steps   {
@@ -89,11 +98,11 @@ pipeline {
             steps {
                 sshagent(['QA_ENV_SSH_CRED']) {
                 
-                sh 'ssh -o StrictHostKeyChecking=no ec2-user@3.16.149.213 kubectl delete deployment myjavawebapp'
-                sh 'ssh ec2-user@3.16.149.213  kubectl create deployment myjavawebapp --image=vijkes/javaweb:${BUILD_TAG}'
-                sh "ssh ec2-user@3.16.149.213 wget https://raw.githubusercontent.com/vimallinuxworld13/jenkins-docker-maven-java-webapp/master/webappsvc.yml"
+                sh 'ssh -o StrictHostKeyChecking=no ec2-user@3.16.149.213 kubectl delete deployment mynewjavawebapp'
+                sh 'ssh ec2-user@3.16.149.213  kubectl create deployment mynewjavawebapp --image=vijkes/javaweb:${BUILD_TAG}'
+                sh "ssh ec2-user@3.16.149.213 wget https://raw.githubusercontent.com/vijkes/new-jenkins-docker/master/webappsvc.yml"
                 sh "ssh ec2-user@3.16.149.213  kubectl apply -f webappsvc.yml"
-                sh "ssh ec2-user@3.16.149.213 kubectl scale deployment myjavawebapp --replicas=5"
+                sh "ssh ec2-user@3.16.149.213 kubectl scale deployment mynewjavawebapp --replicas=5"
             }
         }
     }   
