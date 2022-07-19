@@ -7,7 +7,7 @@ pipeline {
     stages  {
         stage('SCM')  {
             steps  {
-                git 'https://github.com/vijkes/new-jenkins-docker.git'
+                git 'https://github.com/vimallinuxworld13/jenkins-docker-maven-java-webapp.git'
             }
             
         }
@@ -46,8 +46,8 @@ pipeline {
             steps {
                 sshagent(['QA_ENV_SSH_CRED']) {
 
-                sh 'ssh -o StrictHostKeyChecking=no ec2-user@3.22.101.222 sudo docker rm -f mynewjavaapp'
-                sh "ssh ec2-user@3.22.101.222 sudo docker run -d -p 8080:8080 --name mynewjavaapp  vijkes/javaweb:${BUILD_TAG}"
+                sh 'ssh -o StrictHostKeyChecking=no ec2-user@13.59.66.87 sudo docker rm -f mynewjavaapp'
+                sh "ssh ec2-user@13.59.66.87 sudo docker run -d -p 8080:8080 --name mynewjavaapp  vijkes/javaweb:${BUILD_TAG}"
                 
             }
         }
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 
                 retry(10) {
-                sh 'curl --silent  http://3.22.101.222:8080/java-web-app/ | grep India'
+                sh 'curl --silent  http://13.59.66.87:8080/java-web-app/ | grep India'
                 }
             } 
             
@@ -88,10 +88,12 @@ pipeline {
         stage('Deploy webApp in Prod Env') {
             steps {
                 sshagent(['QA_ENV_SSH_CRED']) {
-
-                sh 'ssh -o StrictHostKeyChecking=no ec2-user@13.58.5.156 sudo docker rm -f mynewjavaapp'
-                sh "ssh ec2-user@13.58.5.156 sudo docker run -d -p 8080:8080 --name mynewjavaapp  vijkes/javaweb:${BUILD_TAG}"
                 
+                sh 'ssh -o StrictHostKeyChecking=no ec2-user@3.16.149.213 kubectl delete deployment myjavawebapp'
+                sh 'ssh ec2-user@3.16.149.213  kubectl create deployment myjavawebapp --image=vijkes/javaweb:${BUILD_TAG}'
+                sh "ssh ec2-user@3.16.149.213 wget https://raw.githubusercontent.com/vimallinuxworld13/jenkins-docker-maven-java-webapp/master/webappsvc.yml"
+                sh "ssh ec2-user@3.16.149.213  kubectl apply -f webappsvc.yml"
+                sh "ssh ec2-user@3.16.149.213 kubectl scale deployment myjavawebapp --replicas=5"
             }
         }
     }   
