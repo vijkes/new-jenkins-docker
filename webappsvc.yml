@@ -9,6 +9,6 @@ spec:
        app: mynewjavaapp
     type: NodePort
     ports:
-    - nodePort: 30000
+    - nodePort: 30001
       port: 8080
       targetPort: 8080
