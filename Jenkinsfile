@@ -106,6 +106,18 @@ pipeline {
             }
         }
     }   
-    
+    post {
+         always {
+             echo "You can always see me"
+         }
+         success {
+              echo "I am running because the job ran successfully"
+         }
+         unstable {
+              echo "Gear up ! The build is unstable. Try fix it"
+         }
+         failure {
+             echo "OMG ! The build failed"
+             mail bcc: '', body: 'hi check this ..', cc: '', from: '', replyTo: '', subject: 'job ete fail', to: 'vdaga@lwindia.com'
     }
 }
